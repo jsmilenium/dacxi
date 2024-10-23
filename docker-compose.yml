@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+        context: .
+    image: php:7.4-fpm
+    container_name: dacxi_app
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - dacxi_network
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7
+    container_name: dacxi_mysql
+    ports:
+      - "33060:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: dacxi_db
+    networks:
+      - dacxi_network
+
+  webserver:
+    image: nginx:alpine
+    container_name: dacxi_web
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - dacxi_network
+
+networks:
+  dacxi_network:
+    driver: bridge
