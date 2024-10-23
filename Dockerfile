@@ -1,7 +1,7 @@
 # Escolhe a imagem base do PHP com FPM (FastCGI Process Manager)
 FROM php:7.4-fpm
 
-# Instala dependências do sistema
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
@@ -13,14 +13,20 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Instala o Composer
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Define o diretório de trabalho
+# Set working directory
 WORKDIR /var/www/html
 
 # Copia todos os arquivos do projeto para dentro do container
 COPY . /var/www/html
+
+# Install dependencies
+RUN composer install --no-interaction --no-dev --prefer-dist
 
 # Ajusta permissões
 RUN chown -R www-data:www-data /var/www/html \

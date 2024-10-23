@@ -3,8 +3,8 @@ version: '3.8'
 services:
   app:
     build:
-        context: .
-    image: php:7.4-fpm
+      context: .
+      dockerfile: Dockerfile
     container_name: dacxi_app
     working_dir: /var/www/html
     volumes:
@@ -13,6 +13,9 @@ services:
       - dacxi_network
     depends_on:
       - mysql
+    environment:
+      - PHP_MEMORY_LIMIT=512M
+      - PHP_MAX_EXECUTION_TIME=120
 
   mysql:
     image: mysql:5.7
@@ -22,6 +25,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: dacxi_db
+    volumes:
+      - mysql_data:/var/lib/mysql
     networks:
       - dacxi_network
 
@@ -35,6 +40,9 @@ services:
       - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     networks:
       - dacxi_network
+
+volumes:
+  mysql_data:
 
 networks:
   dacxi_network:
