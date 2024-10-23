@@ -1,65 +1,143 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# Laravel 5.6 Project with Docker
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+This project uses **Laravel 5.6** along with **Docker containers**, integrating **Nginx**, **MySQL**, **PHP-FPM**. Follow the instructions below to set up the project, run it locally, and execute tests.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+## **Prerequisites**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. **Docker** and **Docker Compose** must be installed:
+    - [Install Docker](https://docs.docker.com/get-docker/)
+    - [Install Docker Compose](https://docs.docker.com/compose/install/)
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+2. **Composer** must be installed globally:
+    - [Install Composer](https://getcomposer.org/download/)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
+## **Prerequisites**
+Make sure you have the following installed:
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+- Docker and Docker Compose
+- Composer 2.2 LTS
+- Installation and Configuration
 
-## Laravel Sponsors
+## **Installation and Configuration**
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
+### 1. Clone the Repository
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
+    ```bash
+    git clone <git@github.com:jsmilenium/dacxi.git>
+    cd dacxi
+    ```
 
-## Contributing
+### 2. Create and Modify the .env File
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    ```bash
+    cp .env.example .env
+    ```
 
-## Security Vulnerabilities
+Edit the .env file with the following configuration:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    ```bash
+    DB_CONNECTION=mysql
+    DB_HOST=dacxi_mysql
+    DB_PORT=33060
+    DB_DATABASE=dacxi_cb
+    DB_USERNAME=root
+    DB_PASSWORD=123456
+    ```
 
-## License
+### 3. Start the Docker Containers
+    
+    ```bash
+    docker-compose up -d
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 4. Install Dependencies
+    ```bash
+    docker exec -it dacxi_app composer install
+    ```
+
+### 5. Verify the Docker Containers are Running
+
+    ```bash
+    docker-compose ps
+    ```
+
+### 6. Generate the Application Key
+
+    ```bash
+    docker-compose exec app php artisan key:generate
+    ```
+
+### 7. Run Database Migrations
+    
+    ```bash
+    docker-compose exec app php artisan migrate
+    ```
+
+### 8. Acces the Application
+    
+- The application will be available at [http://localhost:9000](http://localhost:9000)
+
+### 9. Running Tests
+
+    ```bash
+    docker exec -it dacxi_app ./vendor/bin/phpunit
+    ```
+
+### 10. Common DockerCommands
+    
+- Acces a container:
+    ```bash
+    docker exec -it dacxi_app bash
+    ``` 
+  
+- Stop all containers:
+    ```bash
+    docker-compose down
+    ```
+- Rebuild containers without cache:
+    ```bash
+    docker-compose up --build --force-recreate -d
+    ```
+- Check containers logs:
+    ```bash
+    docker-compose logs -f
+    docker logs -f dacxi_app
+    ```
+- Run Artisan commands:
+    ```bash
+    docker exec -it laravel_app php artisan <command>
+    ```
+
+### 11. Troubleshooting
+1. Database Connection Issues:
+- Ensure the MySQl container is running
+- Verify database connection details in the `.env` file
+
+2. Permission Denied Issues:
+- Ensure the `storage` and `bootstrap/cache` directories have the correct permissions:
+    ```bash
+    docker exec -it laravel_app chmod -R 777 storage bootstrap/cache
+    ```
+3. Port Conflict Issues:
+- Ensure the ports specified in the `docker-compose.yml` file are not in use by other services on your machine.
+- Check if the required ports (80 and 33060) are available
+- Windows:
+    ```bash
+      netstat -ano | findstr :80
+      netstat -ano | findstr :33060
+    ```
+- Linux:
+    ```bash
+      sudo lsof -i -P -n | grep LISTEN
+    ```
+
+### 12. Additional Notes
+- Ensure you have the correct versions of PHP and Composer to avoid incompatibility issues.
+- Use docker-compose restart <service> if any container becomes unresponsive.
+
+### 13. Conclusion
+This README.md provides a comprehensive guide to setting up and running your Laravel 5.6 application with Docker. If any issues arise, follow the troubleshooting section to resolve them quickly.You have successfully set up the Laravel 5.6 project with Docker containers. You can now access the application, run tests, and make changes to the codebase.
