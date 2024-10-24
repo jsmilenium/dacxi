@@ -41,4 +41,16 @@ class CoinPriceService
 
         return $savedPrices;
     }
+
+    public function getCoinPrices($coin)
+    {
+        $cacheKey = $this->cacheService->generateCacheKey($coin->id);
+
+        if ($this->cacheService->hasCache($cacheKey)) {
+            return $this->cacheService->getCache($cacheKey);
+        } else {
+            $prices = $this->geckoService->getCoinPrice($coin->coin_id);
+            return $this->saveCoinPrice($coin->id, $prices);
+        }
+    }
 }

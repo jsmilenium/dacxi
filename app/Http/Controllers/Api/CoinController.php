@@ -37,14 +37,7 @@ class CoinController extends Controller
         try {
             $coin = $this->coinService->findBySymbol($symbol);
 
-            $cacheKey = $this->cacheService->generateCacheKey($coin->id);
-
-            if ($this->cacheService->hasCache($cacheKey)) {
-                $coinPrices = $this->cacheService->getCache($cacheKey);
-            } else {
-                $prices = $this->geckoService->getCoinPrice($coin->coin_id);
-                $coinPrices = $this->coinPriceService->saveCoinPrice($coin->id, $prices);
-            }
+ 	    $coinPrices = $this->coinPriceService->getCoinPrices($coin);
 
             $data = [
                 'coin' => $coin->symbol,
