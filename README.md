@@ -116,6 +116,7 @@ Edit the .env file with the following configuration:
 ### 1. **Available Endpoints**
 - GET /api/vi/coin/{symbol} 
 - Example: [http://localhost:9000/api/v1/coin/BTC](http://localhost:9000/api/v1/coin/BTC)
+- GET /api/health [http://localhost:9000/api/health](http://localhost:9000/api/health)
 
 ### 8. Run the following command to get coin prices with cURL 
     
