@@ -14,8 +14,11 @@ class CoinPriceResource extends JsonResource
      */
     public function toArray($request): array
     {
-        $prices = collect($this->resource['prices'])->map(function ($price) {
-            return is_array($price) ? $price['price'] : $price;
+	$prices = collect($this->resource['prices'])->map(function ($price) {
+            return [
+                'currency' => $price['currency'],
+                'price' => $price['price'],
+            ];
         })->all();
 
         return [

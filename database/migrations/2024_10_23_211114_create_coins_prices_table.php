@@ -16,6 +16,7 @@ class CreateCoinsPricesTable extends Migration
         Schema::create('coins_prices', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('coin_id')->onDelete('cascade')->index();
+	    $table->string('currency', 10)->nullable();
             $table->decimal('price', 24, 10);
             $table->timestamps();
             $table->softDeletes();

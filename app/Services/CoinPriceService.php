@@ -22,14 +22,16 @@ class CoinPriceService
     {
         $savedPrices = [];
 
-        foreach ($prices as $price => $value) {
+        foreach ($prices as $currency => $value) {
             $this->coinPriceRepository->create([
                 'coin_id' => $coin_id,
+		'currency' => $currency,
                 'price' => $value,
             ]);
 
             $savedPrices[] = [
                 'coin_id' => $coin_id,
+		'currency' => $currency,
                 'price' => $value,
             ];
         }
