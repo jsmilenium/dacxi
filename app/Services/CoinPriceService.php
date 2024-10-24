@@ -4,18 +4,23 @@ namespace App\Services;
 
 use App\Repositories\CoinPriceRepository;
 use App\Services\CacheService;
+use App\Services\CoinGeckoService;
 
 class CoinPriceService
 {
 
     private CoinPriceRepository $coinPriceRepository;
+    private CacheService $cacheService;
+    private CoinGeckoService $geckoService;
 
     public function __construct(
         CoinPriceRepository $coinPriceRepository,
-        CacheService $cacheService
+        CacheService $cacheService,
+        CoinGeckoService $geckoService
     ) {
         $this->coinPriceRepository = $coinPriceRepository;
         $this->cacheService = $cacheService;
+        $this->geckoService = $geckoService;
     }
 
     public function saveCoinPrice(string $coin_id, array $prices): array

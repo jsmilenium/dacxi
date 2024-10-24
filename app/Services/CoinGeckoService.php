@@ -5,6 +5,7 @@ namespace App\Services;
 use GuzzleHttp\Client;
 use App\Exceptions\CoinGeckoApiException;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Log;
 
 class CoinGeckoService
 {
@@ -56,6 +57,7 @@ class CoinGeckoService
 
                 return $prices;
             } catch (\Exception $e) {
+		Log::error("Attempt {$attempt} failed: " . $e->getMessage());
                 if ($attempt === $this->retryAttempts) {
                     throw new CoinGeckoApiException($e->getMessage());
                 }
