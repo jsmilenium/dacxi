@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api.rate.limit']], function () {
+    Route::get('coin/{symbol}', 'Api\CoinController@getCoin');
 });
+
+Route::get('coin/{symbol}', 'Api\CoinController@getCoin');

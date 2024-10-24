@@ -15,7 +15,7 @@ class CreateCoinsTable extends Migration
     public function up()
     {
         Schema::create('coins', function (Blueprint $table) {
-            $table->uuid('id')->primary()->increment();
+            $table->uuid('id')->primary();
             $table->string('coin_id')->unique()->index(); // bitcoin, ethereum, etc
             $table->string('symbol')->unique()->index(); // BTC, ETH, etc
             $table->boolean('is_active')->default(true);

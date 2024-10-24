@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class CoinDTO
 {
-    public string $coin_id;
 
+    public $id;
     public string $symbol;
 
-    public function __construct(string $coin_id, string $symbol)
+    public function __construct(string $id, string $coin_id, string $symbol)
     {
+        $this->id = $id;
         $this->coin_id = $coin_id;
         $this->symbol = $symbol;
     }
@@ -19,8 +20,9 @@ class CoinDTO
     public static function fromModel(Model $model): self
     {
         return new self(
-            $model->coin_id,
-            $model->symbol
+            (string) $model->id,
+            (string) $model->coin_id,
+            (string) $model->symbol
         );
     }
 }
