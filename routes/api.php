@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api.rate.limit']], function () {
     Route::get('coin/{symbol}', 'Api\CoinController@getCoin');
 });
+
+Route::get('/health', function () {
+    return response()->json(['status' => 'healthy']); 
+});
