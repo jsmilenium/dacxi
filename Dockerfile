@@ -1,39 +1,45 @@
 # Escolhe a imagem base do PHP com FPM (FastCGI Process Manager)
-FROM php:7.4-fpm
+FROM php:7.4-fpm-alpine
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libonig-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    zip \
-    unzip \
+ENV APP_HOME=/var/www/html
+
+RUN  apk update && apk upgrade &&  apk add $PHPIZE_DEPS
+
+RUN apk add --no-cache \
+    oniguruma-dev \
     curl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    libmemcached-dev \
+    libpng-dev \
+    libzip-dev \
+    zlib-dev \
+    postgresql-dev
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN docker-php-ext-install \
+    pdo \
+    pdo_pgsql \
+    zip \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+#RUN pecl install redis && docker-php-ext-enable redis
 
-# Set working directory
-WORKDIR /var/www/html
+RUN apk del --no-cache libmemcached-dev
 
-# Copia todos os arquivos do projeto para dentro do container
-COPY . /var/www/html
+WORKDIR $APP_HOME
 
-# Install dependencies
+COPY . .
+
+RUN cp .env.example .env
+
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer
+
+RUN composer self-update
 RUN composer install --no-interaction --no-dev --prefer-dist
-
-# Ajusta permissões
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage
-
-# Expõe a porta do PHP-FPM (opcional)
-EXPOSE 9000
-
-# Comando padrão ao iniciar o container
-CMD ["php-fpm"]
+RUN chown -R www-data:www-data $APP_HOME
+RUN chmod -R 777 $APP_HOME/storage
+RUN chmod -R 777 $APP_HOME/bootstrap/cache
+RUN php artisan key:generate

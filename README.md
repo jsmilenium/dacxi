@@ -1,6 +1,6 @@
 # Laravel 5.6 Project with Docker
 
-This project uses **Laravel 5.6** along with **Docker containers**, integrating **Nginx**, **MySQL**, **PHP-FPM**. Follow the instructions below to set up the project, run it locally, and execute tests.
+This project uses **Laravel 5.6** along with **Docker containers**, integrating **Nginx**, **Postgres**, **PHP-FPM**. Follow the instructions below to set up the project, run it locally, and execute tests.
 
 ---
 
@@ -40,12 +40,12 @@ Make sure you have the following installed:
 Edit the .env file with the following configuration:
 
     ```bash
-    DB_CONNECTION=mysql
-    DB_HOST=dacxi_mysql
-    DB_PORT=33060
+    DB_CONNECTION=pgsql
+    DB_HOST=dacxi-postgres
+    DB_PORT=5432
     DB_DATABASE=dacxi_cb
-    DB_USERNAME=root
-    DB_PASSWORD=123456
+    DB_USERNAME=postgres
+    DB_PASSWORD=postgres
     ```
 
 ### 3. Start the Docker Containers
@@ -56,7 +56,7 @@ Edit the .env file with the following configuration:
 
 ### 4. Install Dependencies
     ```bash
-    docker exec -it dacxi_app composer install
+    docker exec -it dacxi-app composer install
     ```
 
 ### 5. Verify the Docker Containers are Running
@@ -71,10 +71,10 @@ Edit the .env file with the following configuration:
     docker-compose exec app php artisan key:generate
     ```
 
-### 7. Run Database Migrations
+### 7. Run Database Migrations and Seeders
     
     ```bash
-    docker-compose exec app php artisan migrate
+    docker-compose exec app php artisan migrate --seed
     ```
 
 ### 8. Acces the Application
@@ -84,14 +84,14 @@ Edit the .env file with the following configuration:
 ### 9. Running Tests
 
     ```bash
-    docker exec -it dacxi_app ./vendor/bin/phpunit
+    docker exec -it dacxi-app ./vendor/bin/phpunit
     ```
 
-### 10. Common DockerCommands
+### 10. Common Docker Commands
     
 - Acces a container:
     ```bash
-    docker exec -it dacxi_app bash
+    docker exec -it dacxi-app bash
     ``` 
   
 - Stop all containers:
@@ -105,30 +105,30 @@ Edit the .env file with the following configuration:
 - Check containers logs:
     ```bash
     docker-compose logs -f
-    docker logs -f dacxi_app
+    docker logs -f dacxi-app
     ```
 - Run Artisan commands:
     ```bash
-    docker exec -it laravel_app php artisan <command>
+    docker exec -it dacxi-app php artisan <command>
     ```
 
 ### 11. Troubleshooting
 1. Database Connection Issues:
-- Ensure the MySQl container is running
+- Ensure the Postgres container is running
 - Verify database connection details in the `.env` file
 
 2. Permission Denied Issues:
 - Ensure the `storage` and `bootstrap/cache` directories have the correct permissions:
     ```bash
-    docker exec -it laravel_app chmod -R 777 storage bootstrap/cache
+    docker exec -it dacxi-app chmod -R 777 storage bootstrap/cache
     ```
 3. Port Conflict Issues:
 - Ensure the ports specified in the `docker-compose.yml` file are not in use by other services on your machine.
-- Check if the required ports (80 and 33060) are available
+- Check if the required ports (9000 and 5432) are available
 - Windows:
     ```bash
-      netstat -ano | findstr :80
-      netstat -ano | findstr :33060
+      netstat -ano | findstr :9000
+      netstat -ano | findstr :5432
     ```
 - Linux:
     ```bash

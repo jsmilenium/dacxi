@@ -1,49 +1,60 @@
 version: '3.8'
 
 services:
-  app:
+  dacxi-app:
+    container_name: dacxi-app
+    restart: unless-stopped
+    tty: true
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: dacxi_app
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
-    networks:
-      - dacxi_network
     depends_on:
-      - mysql
+      - dacxi-postgres
     environment:
       - PHP_MEMORY_LIMIT=512M
       - PHP_MAX_EXECUTION_TIME=120
-
-  mysql:
-    image: mysql:5.7
-    container_name: dacxi_mysql
-    ports:
-      - "33060:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: dacxi_db
-    volumes:
-      - mysql_data:/var/lib/mysql
     networks:
-      - dacxi_network
+      - dacxi
 
-  webserver:
-    image: nginx:alpine
-    container_name: dacxi_web
+  dacxi-postgres:
+    image: postgres:12.0-alpine
+    container_name: dacxi-postgres
+    restart: unless-stopped
+    tty: true
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dacxi_cb
+      POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "80:80"
+      - "5432:5432"
+    volumes:
+      - "./.data/dbdata:/var/lib/postgresql/data"
+    networks:
+      - dacxi
+
+  dacxi-nginx:
+    image: nginx:alpine
+    container_name: dacxi-nginx
+    restart: always
+    ports:
+      - "9000:80"
+      - "443:443"
     volumes:
       - ./:/var/www/html
       - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - dacxi-app
     networks:
-      - dacxi_network
+      - dacxi
 
 volumes:
-  mysql_data:
+  pgsql:
+    driver: local
 
 networks:
-  dacxi_network:
+  dacxi:
     driver: bridge
