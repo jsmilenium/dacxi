@@ -2,6 +2,8 @@ version: '3.8'
 
 services:
   dacxi-app:
+    env_file:
+      - .env
     container_name: dacxi-app
     restart: unless-stopped
     tty: true
@@ -16,6 +18,9 @@ services:
     environment:
       - PHP_MEMORY_LIMIT=512M
       - PHP_MAX_EXECUTION_TIME=120
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     networks:
       - dacxi
 

@@ -33,6 +33,7 @@ WORKDIR $APP_HOME
 COPY . .
 
 RUN cp .env.example .env
+RUN cp .env.example .env.production
 
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer

@@ -102,13 +102,13 @@ Edit the .env file with the following configuration:
 ### 3. Generate the Application Key
 
    ```bash
-    docker-compose exec app php artisan key:generate
+    docker-compose exec dacxi-app php artisan key:generate
    ```
 
 ### 4. Run Database Migrations and Seeders
     
    ```bash
-    docker-compose exec app php artisan migrate --seed
+    docker-compose exec dacxi-app php artisan migrate --seed
    ```
 ---
 ## 7. **API Usage**

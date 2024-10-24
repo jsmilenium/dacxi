@@ -26,6 +26,8 @@ class CoinGeckoService
         $this->client = new Client([
             'base_uri' => $this->baseUrl,
             'timeout' => $this->timeout,
+	    'verify' => true,
+            'http_errors' => true
         ]);
     }
 
@@ -41,7 +43,7 @@ class CoinGeckoService
             try {
                 $response = $this->client->get("coins/{$coinId}", [
                     'headers' => [
-                        'x-cg-demo-api-key' => $this->apiKey, // Incluindo a API Key no header
+                        'x-cg-demo-api-key' => $this->apiKey,
                     ],
                 ]);
 
@@ -57,7 +59,7 @@ class CoinGeckoService
                 if ($attempt === $this->retryAttempts) {
                     throw new CoinGeckoApiException($e->getMessage());
                 }
-                usleep($this->retryDelay * 1000); // Aguardar antes da próxima tentativa
+                usleep($this->retryDelay * 1000);
                 $attempt++;
             }
         }
