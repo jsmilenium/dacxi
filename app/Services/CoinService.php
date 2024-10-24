@@ -16,9 +16,9 @@ class CoinService
         $this->repository = $repository;
     }
 
-    public function findBySymbol(string $coin): CoinDTO
+    public function findBySymbol(string $symbol): CoinDTO
     {
-        $coin = $this->repository->findBySymbol($coin);
+        $coin = $this->repository->findBySymbol($symbol);
 
         if (!$coin) {
             throw new ModelNotFoundException("Coin not found with symbol: {$coin}");
